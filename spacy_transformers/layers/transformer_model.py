@@ -264,7 +264,11 @@ def huggingface_from_pretrained(
         str_path = str(source.absolute())
     else:
         str_path = source
-    tokenizer = tokenizer_cls.from_pretrained(str_path, **tok_config)
+    try:
+        tokenizer = tokenizer_cls.from_pretrained(str_path, **tok_config)
+    except Exception as e:
+        from transformers import BertTokenizer
+        tokenizer = BertTokenizer.from_pretrained(str_path, **tok_config)
     vocab_file_contents = None
     if hasattr(tokenizer, "vocab_file"):
         with open(tokenizer.vocab_file, "rb") as fileh:
